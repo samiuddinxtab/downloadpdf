@@ -1,0 +1,613 @@
+PRODUCT REQUIREMENTS DOCUMENT
+
+Digital Islamic PDF Library
+
+Version 5.0 — Final Repository Specification
+
+---
+
+1. PRODUCT VISION
+
+A mobile-first digital library for curated Islamic articles in PDF format, optimized for knowledge organization, fast access, and long-term archival stability.
+
+Attribute	Specification
+
+Content Languages	Urdu, Arabic
+Interface Language	Urdu (RTL)
+Primary Distribution	Messaging platforms (shared links)
+Repository Type	Institutional digital archive
+Designated Community	Urdu and Arabic readers with basic Islamic scholarly literacy
+
+> OAIS Note: Designated Community defines who the archive serves and what knowledge they bring to interpret the preserved information.
+
+---
+
+2. CORE OBJECTIVES
+
+#	Objective
+
+1	Provide structured archive of Islamic research articles
+2	Enable instant PDF download from mobile devices
+3	Maintain scholarly organization through metadata
+4	Ensure long-term scalability and stability
+5	Prevent uncontrolled redistribution via watermarking
+
+---
+
+3. TARGET USERS
+
+Primary Audience: Students, Researchers, Scholars, General Readers
+
+User Journey:
+
+Receive Link → Open Article Page → Read Synopsis → Download PDF
+
+---
+
+4. CONTENT STRUCTURE
+
+Each article contains two components:
+
+Component	Description
+
+Metadata Record	Structured information for discovery
+PDF File	Actual content document
+
+---
+
+5. INFORMATION ARCHITECTURE
+
+Top-Level Categories
+
+Category	Code	Urdu
+
+Creed	AQEEDAH	عقیدہ
+Jurisprudence	FIQH	فقہ
+Hadith	HADITH	حدیث
+Exegesis	TAFSIR	تفسیر
+Biography	SEERAH	سیرت
+Refutations	RADD	ردّ باطل فرق
+Contemporary Issues	MASAIL	عصری مسائل
+
+> Rule: Category code becomes the prefix for all article unique IDs.
+
+Tag Hierarchy (Nested Vocabulary)
+
+Parent Tag	Child Tags
+
+عبادات	نماز, روزہ, حج, زکوٰۃ, جہاد
+معاملات	تجارت, قرض, نکاح, طلاق, وراثت
+عقائد	توحید, شرک, بدعت, نبوت, آخرت
+سیرت	غزوات, صحابہ, ازواج نبی
+
+Discovery Index Pages
+
+Index Page	Purpose
+
+All Articles	Complete catalog
+All Authors	Author-wise browsing
+All Topics	Topic-wise browsing
+Most Downloaded	Popular content
+Recently Added	New arrivals
+علمی فہرست	Classical-style master index
+
+---
+
+6. METADATA MODEL
+
+Descriptive Metadata (Required)
+
+Field	Type	Normalization Rule
+
+Title	Text	Fixed after publication
+Author ID	Reference	Links to authority record
+Category	Select	From controlled list
+Tags	Select	From hierarchical vocabulary
+Language	Select	Urdu / Arabic only
+Synopsis	Text	Max 500 words
+Pages	Number	Auto-extracted
+File Size	Number	Auto-extracted
+Upload Date	Date	Auto-generated
+Unique ID	Text	Format: CAT-### (permanent)
+PDF File	File	Immutable after upload
+Slug	Text	Never changes after publish
+Checksum	Hash	SHA-256 for integrity verification
+
+Preservation Metadata (Required)
+
+Field	Description
+
+Creation Method	Original source type
+Digitization Source	Scan / Digital native
+Checksum Generation Date	When hash was created
+Version History	All version records
+Preservation Actions	Migrations, repairs, updates
+Format Version	PDF standard version
+Last Fixity Check	Date of last verification
+
+Optional Citation Fields
+
+Field	Description
+
+Quran References	Structured verse citations
+Hadith References	Structured hadith citations
+Classical Sources	Book/title references
+
+Metadata Export Format
+
+Requirement	Specification
+
+Export Format	JSON or XML
+Export Scope	Full metadata record per article
+Export Trigger	On-demand or scheduled
+Purpose	System migration and portability
+
+> Rule: Repositories live longer than software. Metadata must be portable.
+
+---
+
+7. AUTHOR AUTHORITY RECORDS
+
+Field	Description
+
+Author ID	Unique permanent identifier
+Canonical Name	One standardized spelling
+Alternate Spellings	All known variations
+Birth Year	Optional
+Death Year	Optional
+Scholar Affiliation	Optional
+Works Count	Auto-calculated
+
+Example Authority Record
+
+Field	Value
+
+Author ID	AUTH-001
+Canonical Name	ابن تیمیہ
+Alternate Spellings	ابن تيميه, شیخ الاسلام ابن تیمیہ
+Birth Year	661 AH
+Death Year	728 AH
+
+---
+
+8. METADATA NORMALIZATION RULES
+
+Element	Rule
+
+Author Names	One canonical record per author
+Category Names	Cannot be modified after creation
+Tags	Must come from controlled hierarchical vocabulary
+Language	Limited to predefined list (Urdu, Arabic)
+Unique ID	Never reused, never reassigned
+Category Code	Prefix derived from category table
+Preservation Metadata	Updated on every action
+
+---
+
+9. CONTROLLED VOCABULARY (TAG DICTIONARY)
+
+Pre-approved Tags Only — Hierarchical Structure
+
+Parent	Children
+
+عبادات	نماز, روزہ, حج, زکوٰۃ, جہاد
+معاملات	تجارت, قرض, نکاح, طلاق, وراثت
+عقائد	توحید, شرک, بدعت, نبوت, آخرت
+
+Rule: No new tag created without approval.
+
+---
+
+10. ARTICLE PAGE LAYOUT
+
+Required Elements:
+
+Title, Author (linked to authority record), Category, Language
+
+Pages, File Size, Synopsis, Tags
+
+Download Button (prominent)
+
+Version Number
+
+Unique ID (displayed)
+
+Last Updated Date
+
+Optional Elements:
+
+Quran/Hadith References
+
+Classical Sources
+
+Related Articles (minimum 3 when available)
+
+---
+
+11. URL STRUCTURE & CANONICAL POLICY
+
+Format: /category/article-slug
+
+Example: /fiqh/zakat-masail
+
+URL Permanence Rules
+
+Rule	Specification
+
+Once Published	URL must never change
+Title Changes	Slug remains unchanged
+Category Changes	Original URL redirects to new
+Deleted Content	URL returns archival notice
+Sitemap	Auto-generated for all article pages
+
+---
+
+12. DOWNLOAD BEHAVIOR
+
+Download starts immediately on click
+
+No preview page
+
+Flow: Open Article → Click Download → PDF Downloads
+
+---
+
+13. PDF VERSION POLICY
+
+Change Type	Action	Version Format
+
+Minor Correction	Keep same ID	FIQH-017 v1.0 → v1.1
+Major Revision	New version number	FIQH-017 v1.0 → v2.0
+New Article	New unique ID	FIQH-018 v1.0
+
+Archival Integrity Rules
+
+Rule	Specification
+
+Original PDF	Never overwritten
+New Version	Stored as separate file
+History	All versions retained
+Checksum	Generated on upload, verified periodically
+
+---
+
+14. FILE FIXITY CHECKS
+
+Verification Schedule
+
+Frequency	Scope
+
+Monthly	New files uploaded in period
+Quarterly	Entire archive verification
+Immediate	After any file migration
+On-Demand	Before public access restoration
+
+Fixity Check Process
+
+Step	Action
+
+1	Retrieve stored checksum from metadata
+2	Generate new checksum from stored file
+3	Compare checksums
+4	Log result in preservation metadata
+5	Alert if mismatch detected
+
+---
+
+15. FORMAT MIGRATION POLICY
+
+Trigger Conditions
+
+Condition	Action
+
+PDF standard becomes obsolete	Plan migration
+Security vulnerability discovered	Plan migration
+Better archival format available	Evaluate migration
+
+Migration Rules
+
+Rule	Specification
+
+Original File	Always retained
+New Format	Created alongside original
+Metadata	Migration action recorded
+Access	Users receive migrated version
+Preservation	Both versions stored
+
+---
+
+16. PDF ACCESSIBILITY STANDARD
+
+Requirement	Specification
+
+Text Layer	PDF must contain selectable text
+Image Scans	Not allowed unless OCR applied
+Searchability	Text must be machine-readable
+Font Embedding	All fonts must be embedded
+
+---
+
+17. DUPLICATE DETECTION RULE
+
+Before publishing, system must check:
+
+Check Type	Method
+
+Duplicate Title	Exact match in database
+Duplicate Slug	Exact match in database
+Duplicate PDF	Checksum comparison
+
+Action: Block publication if duplicate detected.
+
+---
+
+18. RELATED ARTICLES LOGIC
+
+Priority	Criteria
+
+1	Same tags
+2	Same author
+3	Same category
+
+Minimum: 3 related articles displayed when available.
+
+---
+
+19. SEARCH SYSTEM
+
+Scope: Internal search only
+
+Searchable Fields: Title, Tags, Author, Category
+
+Search Index Refresh Policy
+
+Trigger	Action
+
+Article Added/Modified/Deleted	Index updated immediately
+
+---
+
+20. CONTENT ORGANIZATION
+
+File Naming Standard
+
+category-topic-language.pdf
+
+Unique Article ID Format
+
+Component	Format	Example
+
+Prefix	Category code (uppercase)	FIQH
+Separator	Hyphen	-
+Number	3-digit sequential	017
+Full ID	PREFIX-###	FIQH-017
+
+Archival Identifier Persistence
+
+Rule	Specification
+
+Unique ID	Permanent, never changes
+Reassignment	Never reused after deletion
+Prefix Source	Derived from category code table
+
+---
+
+21. CONTENT ACCEPTANCE CRITERIA
+
+Criteria	Requirement
+
+Source	Authentic scholarly sources only
+Authorship	Clear attribution required
+Duplicates	Not allowed unless significantly expanded
+PDF Quality	Text must be readable and searchable
+Language	Urdu or Arabic only
+Format	PDF only
+
+---
+
+22. RIGHTS & DISTRIBUTION
+
+Aspect	Specification
+
+Usage	Personal use only
+Protection	Soft watermark on every page
+Watermark Content	Library name + Website address
+
+---
+
+23. SECURITY REQUIREMENTS
+
+Encrypted connections
+
+Bot protection
+
+Download abuse prevention
+
+File integrity protection
+
+Public access: Read-only
+
+Uploads: Controlled publishing workflow only
+
+---
+
+24. BACKUP & DISASTER RECOVERY
+
+Backup Schedule
+
+Requirement	Specification
+
+Frequency	Automated daily incremental
+Full Backup	Weekly complete archive
+Storage	Independent archive copy
+Redundancy	Multiple storage locations
+
+Archive Package Structure
+
+archive-package/  
+├── content/  
+│   └── [all PDF files]  
+├── metadata/  
+│   └── [all metadata records]  
+├── checksums/  
+│   └── [all file hashes]  
+└── manifest.json  
+    └── [package inventory]
+
+Disaster Recovery Scenario
+
+Step	Action
+
+1	Retrieve verified archive package from backup
+2	Restore content files to new storage
+3	Restore metadata records
+4	Recalculate all checksums for verification
+5	Rebuild search index from metadata
+6	Validate fixity against manifest
+7	Restore public access
+
+> Purpose: Turns backup into actual disaster recovery capability.
+
+---
+
+25. RETENTION POLICY
+
+Status	Action
+
+Active	Publicly accessible
+Archived	Removed from public view, retained internally
+Deleted	Never permanently removed from storage
+
+---
+
+26. REPOSITORY HEALTH MONITORING
+
+Health Metrics
+
+Metric	Target	Check Frequency
+
+Fixity Verification Success Rate	100%	Monthly
+Backup Validation Success Rate	100%	Weekly
+Metadata Completeness Rate	100%	Per article
+Checksum Mismatch Count	0	Monthly
+
+Health Dashboard
+
+Status	Indicator
+
+Healthy	All metrics at target
+Warning	One metric below target
+Critical	Multiple metrics below target
+
+---
+
+27. ANALYTICS & PRIVACY
+
+Metric	Tracking Method
+
+PDF Downloads	Aggregate count only
+Article Visits	Aggregate count only
+Search Usage	Aggregate count only
+
+Privacy Rules
+
+Rule	Specification
+
+Personal Tracking	None
+User Data	Not collected
+Cookies	None required
+
+---
+
+28. PERFORMANCE TARGETS
+
+Metric	Target
+
+Page Load	< 2 seconds
+Download Start	< 1 second
+Traffic Handling	Support sudden spikes from link sharing
+
+---
+
+29. MOBILE EXPERIENCE
+
+Design Priority: Mobile-first
+
+Requirements: Large download button, Minimal scrolling, Clear typography, Fast loading
+
+---
+
+30. SCALABILITY & EXPANSION
+
+Initial Archive: 100 PDFs
+Projected Archive: 250 PDFs
+Future Threshold: 500+ PDFs
+
+Potential Evolution: Books, Fatwas, Manuscripts, Translations, Scholarly commentary
+
+---
+
+31. CONTENT WORKFLOW
+
+Prepare PDF → Add Watermark → Generate Checksum → Create Metadata →   
+Duplicate Check → Upload PDF → Publish Page → Update Search Index →   
+Log Preservation Action
+
+---
+
+32. SUCCESS METRICS
+
+Metric	Purpose
+
+PDF Downloads	Content demand
+Article Page Visits	Discovery effectiveness
+Search Usage	Navigation patterns
+Return Visitors	User retention
+Fixity Verification Pass Rate	File integrity health
+Backup Validation Success Rate	Disaster recovery readiness
+Metadata Completeness Rate	Catalog quality
+
+---
+
+33. PRODUCT PRINCIPLES
+
+Priority	Description
+
+Clarity	Clean, understandable structure
+Stability	Long-term archival reliability
+Discoverability	Multiple access paths to content
+Preservation	Immutable originals, versioned updates
+Integrity	Verified files, no silent corruption
+Transparency	All preservation actions logged
+Portability	Metadata exportable for migration
+
+> Core Principle: This platform must function as a structured digital library, not a random file repository.
+
+---
+
+34. COMPLIANCE REFERENCE
+
+Standard	Application
+
+OAIS Reference Model	Archival structure & lifecycle
+Dublin Core	Descriptive metadata
+PREMIS	Preservation metadata
+Trusted Repositories Audit	Health monitoring
+
+---
+
+35. NEXT DELIVERABLES
+
+Document	Purpose
+
+Information Architecture	Visual site structure
+Folder Structure	Physical/digital file organization
+Metadata Schema	Database field specifications
+Authority Record Schema	Author control structure
+Preservation Metadata Schema	Long-term maintenance fields
+
+> Note: This PRD defines the constitution of the library. The next documents design the physical catalog and shelving system. This is where repositories become elegant or permanently messy.
+
+---
+
+Document Version: 5.0 | Status: Production Ready | Standards: OAIS-Aligned | Designated Community: Urdu/Arabic Islamic Scholars
